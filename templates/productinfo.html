@@ -1,0 +1,22 @@
+{% extends "base.html" %} {% block content %}
+<p>
+<div>
+  <h1>Інформація про товар</h1>
+</div>
+</p>
+<div class="container">
+  <p>
+    <h3>Товар: {{ item.nameproduct }}</h3>
+    <h4>Кількість: {{ item.quantity }} {{ item.nameunitshort }}</h4>
+    <h4>Ціна: {{ "%.2f" % item.price }}</h4>
+    <h4>Сума: {{ "%.2f" % item.anon_1 }}</h4>
+    <input type="hidden" name="idunit" value="{{ item.unit }}">
+  </p>
+  <form method="POST" action="/income/{{ item.idTov }}">
+    <button class="buttons" type="submit">Надходження на склад</button>
+  </form>
+  <form method="POST" action="/selling/{{ item.idTov }}">
+    <button class="buttons" type="submit">Продаж товару</button>
+  </form>
+</div>
+{% endblock %}

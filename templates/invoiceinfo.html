@@ -1,0 +1,25 @@
+{% extends "base.html" %} {% block content %}
+<p>
+  <div>
+    <h1>{{ item.nametype }}</h1>
+  </div>
+</p>
+<div class="container">
+    <form method="POST" action="/changestatus/{{ item.id }}">
+        <p>
+            <h3>Товар: {{ item.nameproduct }}</h3>
+            <h4>Кількість: {{ item.quantity }} {{ item.nameunitshort }}</h4>
+            <h4>Ціна: {{ "%.2f" % item.price }}</h4>
+            <h4>Сума: {{ "%.2f" % item.sum }}</h4>
+            <div>
+                <h5>Номер накладної: {{ item.numdoc }}</h5>
+                <h5>Дата накладної: {{ item.datedoc.strftime('%d-%m-%Y') }}</h5>
+                <h5>Дата операції: {{ item.dateinvoice.strftime('%d-%m-%Y') }}</h5>
+            </div>
+            <h4>Статус: {{ item.namestatus }}</h4>
+            <input type="hidden" name="id_status" value="{{ item.status }}" />
+        </p>  
+        <button class="buttons" type="submit">Змінити статус</button>
+    </form>
+</div>
+{% endblock %}

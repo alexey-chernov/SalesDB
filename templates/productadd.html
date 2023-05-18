@@ -1,0 +1,24 @@
+{% extends "base.html" %} {% block content %}
+
+<div>
+  <h4>Додати товар на склад</h4>
+</div>
+<table class="container">
+  <thead>
+    <tr>
+      <th>Назва товару</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+    <tr>
+      <td>
+        <a class="nav-link" href="/newproduct/{{ item.id }}"
+          >{{ item.nameproduct }}</a
+        >
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

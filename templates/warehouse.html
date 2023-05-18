@@ -1,0 +1,37 @@
+{% extends "base.html" %} {% block content %}
+
+<div>
+  <h4>Склад</h4>
+</div>
+<div class="input_product">
+  <form method="POST" action="/productadd">
+    <button class="buttons" type="submit">Додати товар</button>
+  </form>
+</div>
+<table class="container">
+  <thead>
+    <tr>
+      <th>Назва товару</th>
+      <th>Кількість</th>
+      <th>Одиниці</th>
+      <th>Ціна</th>
+      <th>Сума</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+    <tr>
+      <td>
+        <a class="nav-link" href="/productinfo/{{ item.idTov }}"
+          >{{ item.nameproduct }}</a
+        >
+      </td>
+      <td>{{ item.quantity }}</td>
+      <td>{{ item.nameunitshort }}</td>
+      <td>{{ "%.2f" % item.price }}</td>
+      <td>{{ "%.2f" % item.anon_1 }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

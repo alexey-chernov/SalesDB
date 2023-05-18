@@ -1,0 +1,36 @@
+{% extends "base.html" %} {% block content %}
+
+<div>
+  <h4>Перегляд накладних</h4>
+</div>
+<table class="container">
+  <thead>
+    <tr>
+      <th>Тип накладної</th>
+      <th>Назва товару</th>
+      <th>Кількість</th>
+      <th>Одиниці</th>
+      <th>Ціна</th>
+      <th>Сума</th>
+      <th>Статус</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+    <tr>
+      <td>{{ item.nametype }}</td>
+      <td>
+        <a class="nav-link" href="/invoiceinfo/{{ item.id }}"
+          >{{ item.nameproduct }}</a
+        >
+      </td>
+      <td>{{ item.quantity }}</td>
+      <td>{{ item.nameunitshort }}</td>
+      <td>{{ "%.2f" % item.price }}</td>
+      <td>{{ "%.2f" % item.sum }}</td>
+      <td>{{ item.namestatus }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

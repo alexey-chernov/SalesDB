@@ -1,0 +1,50 @@
+html {
+    box-sizing: border-box;
+    font-family: "Roboto", sans-serif;
+    height: 100%;
+}
+
+body {
+    position: relative;
+    min-height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.appWrapper {
+    max-width: 600px;
+    max-height: 400px;
+    background: rgba(1, 44, 49, 0.749);
+    padding: 0 40px;
+    border-radius: 20px;
+    margin: 20px;
+}
+
+.homeLibraryHeader {
+    color: rgba(157, 233, 145);
+    text-align: center;
+    margin: 30px 0;
+    font-size: 32px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.label_book {
+    color: rgba(157, 233, 145, 0.76);
+    font-size: large;
+}
+
+.save_button {
+    display: block;
+    margin: 10 auto;
+    border: none;
+    font-size: 16px;
+    padding: 10px;
+    box-shadow: 3px 4px 5px -4px rgba(50, 50, 50, 0.75);
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: rgba(199, 194, 194, 0.801);
+    transition: background-color 0.15s linear;
+}

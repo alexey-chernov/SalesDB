@@ -1,0 +1,32 @@
+{% extends "base.html" %} {% block content %}
+<p>
+<div>
+  <h1>Прибуткова накладна</h1>
+</div>
+</p>
+<div class="container">
+  <form method="POST" action="/saveincome/{{ item.idTov }}">
+    <h3>Товар: {{ item.nameproduct }}</h3>
+    <h4>Кількість товару:</h4>
+    <input type="number" placeholder="0" step="1" name="quantity_to_income" />
+    <input type="hidden" name="oldquantity" value="{{ item.quantity }}" />
+    <input type="hidden" name="idunit" value="{{ item.unit }}" />
+    <h4>Ціна:</h4>
+    <input
+      type="number"
+      placeholder="0.00"
+      step="0.01"
+      name="price_to_income"
+    />
+    <h4>Номер накладної:</h4>
+    <input type="text" name="numberdocument" />
+    <h4>Дата накладної:</h4>
+    <input type="text" name="datedocument" />
+    <p>
+      <h5><input type="checkbox" name="is_saled" />Оплачено</h5>
+    </p>
+    <button class="buttons" type="submit">Створити</button>
+  </form>
+</div>
+
+{% endblock %}

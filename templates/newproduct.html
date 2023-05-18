@@ -1,0 +1,30 @@
+{% extends "base.html" %} {% block content %}
+<p>
+<div>
+  <h1>Додати новий продукт на склад</h1>
+</div>
+</p>
+<div class="container">
+  <form method="POST" action="/saveproduct/{{ product_id }}">
+    <input type="hidden" name="idproduct" value="{{ product_id }}" />
+    <h3>Назва: {{ product.nameproduct }} - {{ product_id }}</h3>
+    <h4>Кількість товару: </h4>
+    <input type="number" placeholder="0" step="1" name="quantity" />
+    <h4>Одиниці: </h4>
+    <select name="unitcode" id="unitcode">
+        {% for unit in units %}
+            <option value={{unit}}>{{unit}}</option>
+        {% endfor %}
+    </select>
+    <h4>Ціна:</h4>
+    <input
+      type="number"
+      placeholder="0.00"
+      step="0.01"
+      name="price"
+    />
+    <p><div><button class="buttons" type="submit">Додати на склад</button></div></p>
+  </form>
+</div>
+
+{% endblock %}
