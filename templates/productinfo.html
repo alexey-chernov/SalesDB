@@ -4,19 +4,31 @@
   <h1>Інформація про товар</h1>
 </div>
 </p>
-<div class="container">
+<div>
+    <form method="POST" action="/setprice/{{ itemone.idTov }}">
+      <h3>Найменування: {{ itemone.nameproduct }}</h3>
+      <h4>Кількість: {{ itemone.quantity }} {{ itemone.nameunitshort }}</h4>
+      <h4>Ціна:  </h4>
+      <input
+        type="number"
+        placeholder="0.00"
+        step="0.01"
+        name="newprice"
+        value="{{ itemone.price }}"
+      />
+      <button type="submit">Встановити нову ціну</button>
+      <h4>Сума: {{ "%.2f" % itemone.sum }}</h4>
+      <input type="hidden" name="idunit" value="{{ itemone.unit }}">
+  </form>
   <p>
-    <h3>Товар: {{ item.nameproduct }}</h3>
-    <h4>Кількість: {{ item.quantity }} {{ item.nameunitshort }}</h4>
-    <h4>Ціна: {{ "%.2f" % item.price }}</h4>
-    <h4>Сума: {{ "%.2f" % item.anon_1 }}</h4>
-    <input type="hidden" name="idunit" value="{{ item.unit }}">
+    <form method="POST" action="/income/{{ itemone.idTov }}">
+      <button type="submit">Надходження на склад</button>
+    </form>
   </p>
-  <form method="POST" action="/income/{{ item.idTov }}">
-    <button class="buttons" type="submit">Надходження на склад</button>
-  </form>
-  <form method="POST" action="/selling/{{ item.idTov }}">
-    <button class="buttons" type="submit">Продаж товару</button>
-  </form>
+  <p>
+    <form method="POST" action="/selling/{{ itemone.idTov }}">
+      <button type="submit">Продаж товару</button>
+    </form>
+  </p>
 </div>
 {% endblock %}

@@ -1,6 +1,6 @@
 from sqlalchemy import Table, Column, Integer, String, Float, MetaData, Boolean, DateTime
 from sqlalchemy import create_engine
-from sqlalchemy import select, func
+from sqlalchemy import select, func, desc
 from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, IntegerField, FloatField
 from wtforms.validators import DataRequired
@@ -87,13 +87,13 @@ class LoginForm(FlaskForm):
 class OptTrade:
     # SELECT
     def getWarehouse(self):
-        sql = select(sklad, products, units, (sklad.c.quantity * sklad.c.price)).where(
+        sql = select(sklad, products, units, (sklad.c.quantity * sklad.c.price).label("sum")).where(
             sklad.c.idTov == products.c.id, sklad.c.unit == units.c.id).order_by(products.c.nameproduct)
         result = conn.execute(sql)
         return result
 
     def getProductInfo(self, product_id):
-        sql = select(sklad, products, units, (sklad.c.quantity * sklad.c.price)).where(
+        sql = select(sklad, products, units, (sklad.c.quantity * sklad.c.price).label("sum")).where(
             sklad.c.idTov == products.c.id, sklad.c.unit == units.c.id, sklad.c.idTov == product_id)
         result = conn.execute(sql)
         row = result.fetchone()
@@ -128,16 +128,28 @@ class OptTrade:
         return row
 
     def getInvoices(self):
-        sql = select(invoice, products, units, types, status).where(
-            invoice.c.idTov == products.c.id, invoice.c.unit == units.c.id, invoice.c.idType == types.c.id,
-            invoice.c.status == status.c.id).order_by(invoice.c.dateinvoice.desc())
+        sql = select(types.c.nametype, invoice.c.numdoc, func.sum(invoice.c.sum).label("totalsum"),
+                     func.count(invoice.c.id).label("countTov"), status.c.namestatus).where(
+            invoice.c.idType == types.c.id, invoice.c.status == status.c.id).group_by(
+            types.c.nametype, invoice.c.numdoc, status.c.namestatus, invoice.c.dateinvoice).order_by(
+            invoice.c.dateinvoice.desc())
         result = conn.execute(sql)
         return result
 
-    def getInvoiceInfo(self, invoice_id):
-        sql = select(invoice, products, units, types, status).where(
-            invoice.c.idTov == products.c.id, invoice.c.unit == units.c.id, invoice.c.idType == types.c.id,
-            invoice.c.status == status.c.id, invoice.c.id == invoice_id)
+    def getInvoiceProducts(self, numberdoc):
+        sql = select(invoice, products, units).where(
+            invoice.c.idTov == products.c.id, invoice.c.unit == units.c.id, invoice.c.numdoc == numberdoc
+            ).order_by(products.c.nameproduct)
+        result = conn.execute(sql)
+        return result
+    
+    def getInvoiceInfo(self, numberdoc):
+        sql = select(types.c.nametype, invoice.c.numdoc, invoice.c.datedoc, invoice.c.dateinvoice, 
+                     func.sum(invoice.c.sum).label("totalsum"), func.count(invoice.c.id).label("countTov"), 
+                     status.c.namestatus).where(
+            invoice.c.idType == types.c.id, invoice.c.status == status.c.id, invoice.c.numdoc == numberdoc
+            ).group_by(types.c.nametype, invoice.c.numdoc, invoice.c.datedoc, invoice.c.dateinvoice, 
+                       status.c.namestatus, invoice.c.dateinvoice)
         result = conn.execute(sql)
         row = result.fetchone()
         return row
@@ -159,7 +171,7 @@ class OptTrade:
                                       sum=sum,
                                       status=is_saled)
         result = conn.execute(sql, [{'idType': typeid, 'idTov': productid, 'quantity': quantity,
-                                     'unit': unit, 'leftovers':leftovers, 'numdoc': numberdocument, 
+                                     'unit': unit, 'leftovers': leftovers, 'numdoc': numberdocument,
                                      'datedoc': datedocument, 'price': price, 'sum': sum, 'status': is_saled}])
         conn.commit()
 
@@ -175,6 +187,11 @@ class OptTrade:
     # UPDATE
     def updateSkladQuantity(self, id, newquantity):
         sql = sklad.update().where(sklad.c.idTov == id).values(quantity=newquantity)
+        result = conn.execute(sql)
+        conn.commit()
+
+    def updateSkladPrice(self, id, newprice):
+        sql = sklad.update().where(sklad.c.idTov == id).values(price=newprice)
         result = conn.execute(sql)
         conn.commit()
 

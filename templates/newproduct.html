@@ -7,7 +7,7 @@
 <div class="container">
   <form method="POST" action="/saveproduct/{{ product_id }}">
     <input type="hidden" name="idproduct" value="{{ product_id }}" />
-    <h3>Назва: {{ product.nameproduct }} - {{ product_id }}</h3>
+    <h3>Назва: {{ product.nameproduct }}</h3>
     <h4>Кількість товару: </h4>
     <input type="number" placeholder="0" step="1" name="quantity" />
     <h4>Одиниці: </h4>

@@ -1,23 +1,49 @@
 {% extends "base.html" %} {% block content %}
 <p>
   <div>
-    <h1>{{ item.nametype }}</h1>
+    <h1>{{ itemone.nametype }}</h1>
   </div>
 </p>
 <div class="container">
-    <form method="POST" action="/changestatus/{{ item.id }}">
+    <form method="POST" action="/changestatus/{{ itemone.id }}">
         <p>
-            <h3>Товар: {{ item.nameproduct }}</h3>
-            <h4>Кількість: {{ item.quantity }} {{ item.nameunitshort }}</h4>
-            <h4>Ціна: {{ "%.2f" % item.price }}</h4>
-            <h4>Сума: {{ "%.2f" % item.sum }}</h4>
             <div>
-                <h5>Номер накладної: {{ item.numdoc }}</h5>
-                <h5>Дата накладної: {{ item.datedoc.strftime('%d-%m-%Y') }}</h5>
-                <h5>Дата операції: {{ item.dateinvoice.strftime('%d-%m-%Y') }}</h5>
+                <h4>Номер накладної: {{ itemone.numdoc }}</h4>
+                <h4>Дата накладної: {{ itemone.datedoc.strftime('%d-%m-%Y') }}</h4>
+                <h4>Дата операції: {{ itemone.dateinvoice.strftime('%d-%m-%Y') }}</h4>
             </div>
-            <h4>Статус: {{ item.namestatus }}</h4>
-            <input type="hidden" name="id_status" value="{{ item.status }}" />
+            
+            <table class="container">
+              <thead>
+                <tr>
+                  <th>Товар</th>
+                  <th>Кількість</th>
+                  <th>Одиниці</th>
+                  <th>Ціна</th>
+                  <th>Сума</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in items %}
+                <tr>
+                  <td>{{ item.nameproduct }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ item.nameunitshort }}</td>
+                  <td>{{ "%.2f" % item.price }}</td>
+                  <td>{{ "%.2f" % item.sum }}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                  <td><b>Загальна сума:</b></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td><b>{{ "%.2f" % itemone.totalsum }}</b></td>
+                </tr>
+              </tbody>
+            </table>            
+            <h4>Статус: {{ itemone.namestatus }}</h4>
+            <input type="hidden" name="id_status" value="{{ itemone.status }}" />
         </p>  
         <button class="buttons" type="submit">Змінити статус</button>
     </form>

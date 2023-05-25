@@ -7,10 +7,8 @@
   <thead>
     <tr>
       <th>Тип накладної</th>
-      <th>Назва товару</th>
-      <th>Кількість</th>
-      <th>Одиниці</th>
-      <th>Ціна</th>
+      <th>Номер накладної</th>
+      <th>Кількість товару</th>
       <th>Сума</th>
       <th>Статус</th>
     </tr>
@@ -20,14 +18,12 @@
     <tr>
       <td>{{ item.nametype }}</td>
       <td>
-        <a class="nav-link" href="/invoiceinfo/{{ item.id }}"
-          >{{ item.nameproduct }}</a
+        <a class="nav-link" href="/invoiceinfo/{{ item.numdoc }}"
+          >{{ item.numdoc }}</a
         >
       </td>
-      <td>{{ item.quantity }}</td>
-      <td>{{ item.nameunitshort }}</td>
-      <td>{{ "%.2f" % item.price }}</td>
-      <td>{{ "%.2f" % item.sum }}</td>
+      <td>{{ item.countTov }}</td>
+      <td>{{ "%.2f" % item.totalsum }}</td>
       <td>{{ item.namestatus }}</td>
     </tr>
     {% endfor %}

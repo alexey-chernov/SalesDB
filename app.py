@@ -55,8 +55,8 @@ def warehouse():
 @app.route('/productinfo/<product_id>', methods=["GET"])
 @login_required
 def productinfo(product_id):
-    item = opttrade.getProductInfo(product_id)
-    return render_template("productinfo.html", item=item)
+    itemone = opttrade.getProductInfo(product_id)
+    return render_template("productinfo.html", itemone=itemone)
 
 
 @app.route('/income/<product_id>', methods=["POST"])
@@ -151,11 +151,12 @@ def invoices():
     return render_template("invoices.html", items=items)
 
 
-@app.route('/invoiceinfo/<product_id>', methods=["GET"])
+@app.route('/invoiceinfo/<numberdoc>', methods=["GET"])
 @login_required
-def invoiceinfo(product_id):
-    item = opttrade.getInvoiceInfo(product_id)
-    return render_template("invoiceinfo.html", item=item)
+def invoiceinfo(numberdoc):
+    itemone = opttrade.getInvoiceInfo(numberdoc)
+    items = opttrade.getInvoiceProducts(numberdoc)
+    return render_template("invoiceinfo.html", itemone=itemone, items=items)
 
 
 @app.route('/changestatus/<invoice_id>', methods=["POST"])
@@ -169,3 +170,13 @@ def changestatus(invoice_id):
         opttrade.updateStatusInvoice(invoice_id, 1)
     items = opttrade.getInvoices()
     return render_template("invoices.html", items=items)
+
+
+@app.route('/setprice/<product_id>', methods=["POST"])
+@login_required
+def setprice(product_id):
+    data = request.form
+    newprice = data.get('newprice')
+    opttrade.updateSkladPrice(product_id, newprice)
+    itemone = opttrade.getProductInfo(product_id)
+    return render_template("productinfo.html", itemone=itemone)
