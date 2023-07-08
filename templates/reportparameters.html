@@ -1,0 +1,32 @@
+{% extends "base.html" %} {% block content %}
+
+<p>
+<h1>{{ reportdata.reportname }}</h1>
+</p>
+
+<p>
+<h4>Вкажіть параметри для формування звіту:</h4>
+</p>
+
+<form method="POST" action="/buildreport/{{ reportdata.functionname }}">
+  {% for parameter in parameters %}
+    {% if parameter == "d" %}
+      <p>Дата:
+      <input type="date" name="dateforreport" /></p>
+    {% endif %}
+    {% if parameter == "n" %}
+      <p>Номер:
+      <input type="numeric" name="numberforreport" /></p>
+    {% endif %}
+    {% if parameter == "c" %}
+      <p>Список:
+      <select name="unitcode" id="unitcode">
+          <option>Item 1</option>
+          <option>Item 2</option>
+          <option>Item 3</option>      
+      </select></p>
+    {% endif %}
+  {% endfor %}
+  <button class="buttons" type="submit">Створити звіт</button>
+</form>
+{% endblock %}

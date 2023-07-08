@@ -5,7 +5,7 @@
   </div>
 </p>
 <div class="container">
-    <form method="POST" action="/changestatus/{{ itemone.id }}">
+    <form method="POST" action="/changestatus/{{ itemone.numdoc }}">
         <p>
             <div>
                 <h4>Номер накладної: {{ itemone.numdoc }}</h4>
@@ -45,7 +45,7 @@
             <h4>Статус: {{ itemone.namestatus }}</h4>
             <input type="hidden" name="id_status" value="{{ itemone.status }}" />
         </p>  
-        <button class="buttons" type="submit">Змінити статус</button>
+        <button class="buttons" type="submit">{{ name_button }}</button>
     </form>
 </div>
 {% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %} {% block content %}
+
+<div>
+  <h4>Звітність</h4>
+</div>
+
+<table class="container">
+  <thead>
+    <tr>
+      <th>Назва звіту</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+    <tr>
+      <td>
+        <a class="nav-link" href="/report/{{ item.functionname }}"
+          >{{ item.reportname }}</a
+        >
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

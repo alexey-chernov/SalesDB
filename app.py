@@ -156,18 +156,22 @@ def invoices():
 def invoiceinfo(numberdoc):
     itemone = opttrade.getInvoiceInfo(numberdoc)
     items = opttrade.getInvoiceProducts(numberdoc)
-    return render_template("invoiceinfo.html", itemone=itemone, items=items)
+    if itemone[7] == 1:
+        name_button = 'Змінити статус на "Оплачено"'
+    elif itemone[7] == 2:
+        name_button = 'Повернення товару'
+    return render_template("invoiceinfo.html", itemone=itemone, items=items, name_button=name_button)
 
 
-@app.route('/changestatus/<invoice_id>', methods=["POST"])
+@app.route('/changestatus/<numdoc>', methods=["POST"])
 @login_required
-def changestatus(invoice_id):
+def changestatus(numdoc):
     data = request.form
     idstatus = int(data.get('id_status'))
     if idstatus == 1:
-        opttrade.updateStatusInvoice(invoice_id, 2)
+        opttrade.updateStatusInvoice(numdoc, 2)
     elif idstatus == 2:
-        opttrade.updateStatusInvoice(invoice_id, 1)
+        opttrade.updateStatusInvoice(numdoc, 3)
     items = opttrade.getInvoices()
     return render_template("invoices.html", items=items)
 
@@ -180,3 +184,36 @@ def setprice(product_id):
     opttrade.updateSkladPrice(product_id, newprice)
     itemone = opttrade.getProductInfo(product_id)
     return render_template("productinfo.html", itemone=itemone)
+
+
+@app.route('/reports', methods=["GET"])
+@login_required
+def reports():
+    items = opttrade.getReportsList()
+    return render_template("reports.html", items=items)
+
+
+@app.route('/report/<functionname>', methods=["GET", "POST"])
+@login_required
+def getreport(functionname):
+    function_data = opttrade.getReportParameters(functionname)
+    function_parameters = function_data.functionparameters
+    list(function_parameters)
+    return render_template("reportparameters.html", parameters=function_parameters, reportdata=function_data)
+
+
+@app.route('/buildreport/<functionname>', methods=["POST"])
+@login_required
+def buildreport(functionname):
+    data = request.form
+
+    dateforreport = data.get('dateforreport')
+    
+    functionparameters = dateforreport
+    function_data = opttrade.getReportParameters(functionname)
+    reportname = function_data.reportname
+    
+    functionparameters = f"' {dateforreport} '"
+
+    report = opttrade.buildReport(functionname, functionparameters)
+    return render_template("reportform.html", report=report, reportname=reportname)

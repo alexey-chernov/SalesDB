@@ -1,3 +1,3 @@
-INSERT INTO public."Status"(namestatus)	VALUES ('Не оплачено');
-INSERT INTO public."Status"(namestatus)	VALUES ('Оплачено');
-INSERT INTO public."Status"(namestatus)	VALUES ('Повернено');
+INSERT INTO public."status"(namestatus)	VALUES ('Не оплачено');
+INSERT INTO public."status"(namestatus)	VALUES ('Оплачено');
+INSERT INTO public."status"(namestatus)	VALUES ('Повернено');

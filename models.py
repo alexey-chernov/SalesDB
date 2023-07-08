@@ -1,16 +1,17 @@
 from sqlalchemy import Table, Column, Integer, String, Float, MetaData, Boolean, DateTime
 from sqlalchemy import create_engine
 from sqlalchemy import select, func, desc
+from sqlalchemy.sql import text
 from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, IntegerField, FloatField
 from wtforms.validators import DataRequired
 from wtforms import StringField, PasswordField
 from werkzeug.routing import ValidationError
-import psycopg2
+#import psycopg2
 import datetime
 
 engine = create_engine(
-    'postgresql+psycopg2://salesadmin:qwerty123456@localhost/salesdb')
+    'postgresql+psycopg2://salesadmin:qwerty123456@10.66.66.1/salesdb')
 conn = engine.connect()
 meta = MetaData()
 
@@ -68,6 +69,14 @@ units = Table(
     Column('nameunitshort', String(5))
 )
 
+reports = Table(
+    'reports', meta,
+    Column('id', Integer, nullable=False, primary_key=True),
+    Column('reportname', String(250)),
+    Column('functionname', String(100)),
+    Column('functionparameters', String(10))
+)
+
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -87,8 +96,10 @@ class LoginForm(FlaskForm):
 class OptTrade:
     # SELECT
     def getWarehouse(self):
-        sql = select(sklad, products, units, (sklad.c.quantity * sklad.c.price).label("sum")).where(
-            sklad.c.idTov == products.c.id, sklad.c.unit == units.c.id).order_by(products.c.nameproduct)
+        #sql = select(sklad, products, units, (sklad.c.quantity * sklad.c.price).label("sum")).where(
+        #    sklad.c.idTov == products.c.id, sklad.c.unit == units.c.id).order_by(products.c.nameproduct)
+
+        sql = select('*').select_from(func.select_warehouse()) #Викликається функція select_warehouse
         result = conn.execute(sql)
         return result
 
@@ -128,11 +139,13 @@ class OptTrade:
         return row
 
     def getInvoices(self):
-        sql = select(types.c.nametype, invoice.c.numdoc, func.sum(invoice.c.sum).label("totalsum"),
-                     func.count(invoice.c.id).label("countTov"), status.c.namestatus).where(
-            invoice.c.idType == types.c.id, invoice.c.status == status.c.id).group_by(
-            types.c.nametype, invoice.c.numdoc, status.c.namestatus, invoice.c.dateinvoice).order_by(
-            invoice.c.dateinvoice.desc())
+        #sql = select(invoice.c.dateinvoice, types.c.nametype, invoice.c.numdoc, func.sum(invoice.c.sum).label("totalsum"),
+        #             func.count(invoice.c.id).label("counttov"), status.c.namestatus).where(
+        #    invoice.c.idType == types.c.id, invoice.c.status == status.c.id).group_by(
+        #    types.c.nametype, invoice.c.numdoc, status.c.namestatus, invoice.c.dateinvoice).order_by(
+        #    invoice.c.dateinvoice.desc())
+
+        sql = select('*').select_from(func.select_invoices()) #Викликається функція select_invoices
         result = conn.execute(sql)
         return result
 
@@ -146,13 +159,30 @@ class OptTrade:
     def getInvoiceInfo(self, numberdoc):
         sql = select(types.c.nametype, invoice.c.numdoc, invoice.c.datedoc, invoice.c.dateinvoice, 
                      func.sum(invoice.c.sum).label("totalsum"), func.count(invoice.c.id).label("countTov"), 
-                     status.c.namestatus).where(
+                     status.c.namestatus, invoice.c.status).where(
             invoice.c.idType == types.c.id, invoice.c.status == status.c.id, invoice.c.numdoc == numberdoc
             ).group_by(types.c.nametype, invoice.c.numdoc, invoice.c.datedoc, invoice.c.dateinvoice, 
-                       status.c.namestatus, invoice.c.dateinvoice)
+                       status.c.namestatus, invoice.c.status)
         result = conn.execute(sql)
         row = result.fetchone()
         return row
+    
+    def getReportsList(self):
+        sql = select(reports).order_by(reports.c.reportname)
+        result = conn.execute(sql)
+        return result
+    
+    def getReportParameters(self, functionname):
+        sql = select(reports).where(reports.c.functionname == functionname)
+        result = conn.execute(sql)
+        row = result.fetchone()
+        return row
+
+    def buildReport(self, functionname, functionparameters):
+        sql = text(f"SELECT * FROM {functionname}({functionparameters});")
+        #Викликається функція для вибраного звіту 
+        result = conn.execute(sql).fetchall()
+        return result
 
     # INSERT INTO
     def createinvoice(self, typeid, productid, quantity, unit, leftovers, price, sum, numberdocument, datedocument, is_saled):
@@ -195,8 +225,8 @@ class OptTrade:
         result = conn.execute(sql)
         conn.commit()
 
-    def updateStatusInvoice(self, id, idstatus):
-        sql = invoice.update().where(invoice.c.id == id).values(status=idstatus)
+    def updateStatusInvoice(self, numdoc, idstatus):
+        sql = invoice.update().where(invoice.c.numdoc == numdoc).values(status=idstatus)
         result = conn.execute(sql)
         conn.commit()
 

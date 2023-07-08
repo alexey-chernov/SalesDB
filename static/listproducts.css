@@ -15,6 +15,7 @@ body {
   background-color:#575d69;
 }
 
+/*
 h1 {
   font-size:3em; 
   font-weight: 300;
@@ -39,6 +40,7 @@ h2 a {
   color: #FB667A;
   text-decoration: none;
 }
+*/
 
 .blue { color: #185875; }
 .yellow { color: #FFF842; }
@@ -90,7 +92,7 @@ h2 a {
 
 .container td:first-child { color: #FB667A; }
 
-.container tr:hover {
+/*.container tr:hover {
    background-color: #464A52;
 -webkit-box-shadow: 0 6px 6px -6px #0E1119;
 	   -moz-box-shadow: 0 6px 6px -6px #0E1119;
@@ -110,6 +112,7 @@ h2 a {
 	  transition-property: all;
   transition-timing-function: line;
 }
+*/
 
 @media (max-width: 800px) {
 .container td:nth-child(4),

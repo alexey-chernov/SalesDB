@@ -1,0 +1,23 @@
+{% extends "base.html" %} {% block content %}
+<p>
+<h1>{{ reportname }}</h1>
+</p>
+
+<table class="container">
+    <thead>
+        <tr>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in report %}
+            <tr>
+                {% for cell in item %}
+                    <td>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

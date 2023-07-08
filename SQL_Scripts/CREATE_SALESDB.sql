@@ -32,9 +32,9 @@ CREATE TABLE IF NOT EXISTS public."sklad"
     CONSTRAINT "Sklad_pkey" PRIMARY KEY (id)
 )
 
-TABLESPACE pg_default;
+ABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."sklad"
+ALTER TABLE IF EXISTS public.sklad
     OWNER to salesadmin;
 
 
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS public."invoice"
     leftovers numeric(10,0) DEFAULT 0,
     NumDoc character(50),
     datedoc date NOT NULL,
-    dateinvoice date NOT NULL,
+    dateinvoice date NOT NULL DEFAULT now(),
     price numeric(10,2),
     sum numeric(10,2),
     status numeric(5,0) NOT NULL DEFAULT 0,
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS public."invoice"
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."invoice"
+ALTER TABLE IF EXISTS public.invoice
     OWNER to salesadmin;
 
 
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS public."products"
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."products"
+ALTER TABLE IF EXISTS public.products
     OWNER to salesadmin;
 
 
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS public."units"
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."units"
+ALTER TABLE IF EXISTS public.units
     OWNER to salesadmin;
 
 
@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS public."types"
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."types"
+ALTER TABLE IF EXISTS public.types
     OWNER to salesadmin;
 
 
@@ -115,5 +115,21 @@ CREATE TABLE IF NOT EXISTS public."status"
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."status"
+ALTER TABLE IF EXISTS public.status
+    OWNER to salesadmin;
+
+
+--Створення таблиці Reports
+CREATE TABLE IF NOT EXISTS public."reports"
+(
+    id serial,
+    reportname character(250),
+    functionname character(100),
+    functionparameters character(10),
+    CONSTRAINT "Reports_pkey" PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.reports
     OWNER to salesadmin;

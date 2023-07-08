@@ -22,12 +22,12 @@
     {% for item in items %}
     <tr>
       <td>
-        <a class="nav-link" href="/productinfo/{{ item.idTov }}"
-          >{{ item.nameproduct }}</a
+        <a class="nav-link" href="/productinfo/{{ item.idprod }}"
+          >{{ item.nameprod }}</a
         >
       </td>
       <td>{{ item.quantity }}</td>
-      <td>{{ item.nameunitshort }}</td>
+      <td>{{ item.unitname }}</td>
       <td>{{ "%.2f" % item.price }}</td>
       <td>{{ "%.2f" % item.sum }}</td>
     </tr>

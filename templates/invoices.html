@@ -6,6 +6,7 @@
 <table class="container">
   <thead>
     <tr>
+      <th>Дата операції</th>
       <th>Тип накладної</th>
       <th>Номер накладної</th>
       <th>Кількість товару</th>
@@ -16,13 +17,14 @@
   <tbody>
     {% for item in items %}
     <tr>
+      <th>{{ item.dateinvoice.strftime('%d-%m-%Y') }}</th>
       <td>{{ item.nametype }}</td>
       <td>
         <a class="nav-link" href="/invoiceinfo/{{ item.numdoc }}"
           >{{ item.numdoc }}</a
         >
       </td>
-      <td>{{ item.countTov }}</td>
+      <td>{{ item.counttov }}</td>
       <td>{{ "%.2f" % item.totalsum }}</td>
       <td>{{ item.namestatus }}</td>
     </tr>

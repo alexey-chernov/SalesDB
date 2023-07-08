@@ -19,7 +19,7 @@
       <button type="submit">Встановити нову ціну</button>
       <h4>Сума: {{ "%.2f" % itemone.sum }}</h4>
       <input type="hidden" name="idunit" value="{{ itemone.unit }}">
-  </form>
+    </form>
   <p>
     <form method="POST" action="/income/{{ itemone.idTov }}">
       <button type="submit">Надходження на склад</button>
