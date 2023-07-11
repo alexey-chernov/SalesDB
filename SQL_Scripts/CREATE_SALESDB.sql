@@ -133,3 +133,18 @@ TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.reports
     OWNER to salesadmin;
+
+
+--Створення таблиці Reference_books
+CREATE TABLE IF NOT EXISTS public.reference_books
+(
+    id serial,
+    referencename character(100),
+    referencetablename character(100),
+    CONSTRAINT reference_books_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.reference_books
+    OWNER to salesadmin;

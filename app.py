@@ -202,7 +202,7 @@ def getreport(functionname):
     return render_template("reportparameters.html", parameters=function_parameters, reportdata=function_data)
 
 
-@app.route('/buildreport/<functionname>', methods=["POST"])
+app.route('/buildreport/<functionname>', methods=["POST"])
 @login_required
 def buildreport(functionname):
     data = request.form
@@ -213,7 +213,22 @@ def buildreport(functionname):
     function_data = opttrade.getReportParameters(functionname)
     reportname = function_data.reportname
     
-    functionparameters = f"' {dateforreport} '"
+    functionparameters = f"'{dateforreport}'"
 
     report = opttrade.buildReport(functionname, functionparameters)
     return render_template("reportform.html", report=report, reportname=reportname)
+
+
+@app.route('/referencebooks', methods=["GET"])
+@login_required
+def referencebooks():
+    items = opttrade.getReferencebooksList()
+    return render_template("references.html", items=items)
+
+
+@app.route('/referencebook/<referencetablename>', methods=["GET"])
+@login_required
+def refenceform(referencetablename):
+    reference_name = opttrade.getreferencesname(referencetablename).referencename
+    reference_list = opttrade.buildreferencesform(referencetablename)
+    return render_template("references_form.html", reference_list=reference_list, reference_name=reference_name)

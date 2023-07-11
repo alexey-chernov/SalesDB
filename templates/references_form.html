@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <p><h3>Довідник: {{ reference_name }}</h3></p>
+    <table class="container">
+        <tbody>
+            {% for item in reference_list %}
+                <tr>
+                    <form method="POST" action="/deletereference/{{ item[0] }}">
+                        {% for cell in item %}
+                            <td>{{ cell }}</td>
+                        {% endfor %}
+                        <td><button class="buttons" type="submit">Видалити</button></td>
+                    </form>
+                </tr>
+            {% endfor %}        
+            <tr>
+                <form method="POST" action="/addreference">
+                    {% for cell in item %}
+                        <td><input type="text" name="name"></td>
+                    {% endfor %}    
+                    <td><button class="buttons" type="submit">Додати</button></td>
+                </form>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

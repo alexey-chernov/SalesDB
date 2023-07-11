@@ -77,6 +77,13 @@ reports = Table(
     Column('functionparameters', String(10))
 )
 
+reference_books = Table(
+    'reference_books', meta,
+    Column('id', Integer, nullable=False, primary_key=True),
+    Column('referencename', String(100)),
+    Column('referencetablename', String(100))
+)
+
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -106,9 +113,8 @@ class OptTrade:
     def getProductInfo(self, product_id):
         sql = select(sklad, products, units, (sklad.c.quantity * sklad.c.price).label("sum")).where(
             sklad.c.idTov == products.c.id, sklad.c.unit == units.c.id, sklad.c.idTov == product_id)
-        result = conn.execute(sql)
-        row = result.fetchone()
-        return row
+        result = conn.execute(sql).fetchone()
+        return result
 
     def getListProducts(self):
         sql = select(products).join(sklad, products.c.id == sklad.c.idTov, isouter=True).where(
@@ -128,15 +134,13 @@ class OptTrade:
 
     def getIdUnit(self, nameunits):
         sql = units.select().where(units.c.nameunit == nameunits)
-        result = conn.execute(sql)
-        row = result.fetchone()
-        return row
+        result = conn.execute(sql).fetchone()
+        return result
 
     def getProductName(self, product_id):
         sql = products.select().where(products.c.id == product_id)
-        result = conn.execute(sql)
-        row = result.fetchone()
-        return row
+        result = conn.execute(sql).fetchone()
+        return result
 
     def getInvoices(self):
         #sql = select(invoice.c.dateinvoice, types.c.nametype, invoice.c.numdoc, func.sum(invoice.c.sum).label("totalsum"),
@@ -163,9 +167,8 @@ class OptTrade:
             invoice.c.idType == types.c.id, invoice.c.status == status.c.id, invoice.c.numdoc == numberdoc
             ).group_by(types.c.nametype, invoice.c.numdoc, invoice.c.datedoc, invoice.c.dateinvoice, 
                        status.c.namestatus, invoice.c.status)
-        result = conn.execute(sql)
-        row = result.fetchone()
-        return row
+        result = conn.execute(sql).fetchone()
+        return result
     
     def getReportsList(self):
         sql = select(reports).order_by(reports.c.reportname)
@@ -174,14 +177,28 @@ class OptTrade:
     
     def getReportParameters(self, functionname):
         sql = select(reports).where(reports.c.functionname == functionname)
-        result = conn.execute(sql)
-        row = result.fetchone()
-        return row
+        result = conn.execute(sql).fetchone()
+        return result
 
     def buildReport(self, functionname, functionparameters):
         sql = text(f"SELECT * FROM {functionname}({functionparameters});")
         #Викликається функція для вибраного звіту 
         result = conn.execute(sql).fetchall()
+        return result
+    
+    def getReferencebooksList(self):
+        sql = select(reference_books).order_by(reference_books.c.id)
+        result = conn.execute(sql)
+        return result
+    
+    def buildreferencesform(self, referencetablename):
+        sql = text(f"SELECT * FROM {referencetablename} ORDER BY id;")
+        result = conn.execute(sql).fetchall()
+        return result
+
+    def getreferencesname(self, referencetablename):
+        sql = select(reference_books).where(reference_books.c.referencetablename == referencetablename)
+        result = conn.execute(sql).fetchone()
         return result
 
     # INSERT INTO

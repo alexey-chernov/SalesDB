@@ -1,30 +1,24 @@
 {% extends "base.html" %} {% block content %}
-<p>
-  <div>
-    <h1>{{ itemone.nametype }}</h1>
-  </div>
-</p>
 <div class="container">
-    <form method="POST" action="/changestatus/{{ itemone.numdoc }}">
-        <p>
-            <div>
-                <h4>Номер накладної: {{ itemone.numdoc }}</h4>
-                <h4>Дата накладної: {{ itemone.datedoc.strftime('%d-%m-%Y') }}</h4>
-                <h4>Дата операції: {{ itemone.dateinvoice.strftime('%d-%m-%Y') }}</h4>
-            </div>
-            
-            <table class="container">
-              <thead>
-                <tr>
-                  <th>Товар</th>
-                  <th>Кількість</th>
-                  <th>Одиниці</th>
-                  <th>Ціна</th>
-                  <th>Сума</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for item in items %}
+  <p><h2>{{ itemone.nametype }}</h2></p>
+  <div class="container">
+      <form method="POST" action="/changestatus/{{ itemone.numdoc }}">
+        <div class="container">
+          <h4>Номер накладної: {{ itemone.numdoc }}</h4>
+          <h4>Дата накладної: {{ itemone.datedoc.strftime('%d-%m-%Y') }}</h4>
+          <h4>Дата операції: {{ itemone.dateinvoice.strftime('%d-%m-%Y') }}</h4>
+          <table class="container">
+            <thead>
+              <tr>
+                <th>Товар</th>
+                <th>Кількість</th>
+                <th>Одиниці</th>
+                <th>Ціна</th>
+                <th>Сума</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in items %}
                 <tr>
                   <td>{{ item.nameproduct }}</td>
                   <td>{{ item.quantity }}</td>
@@ -32,20 +26,21 @@
                   <td>{{ "%.2f" % item.price }}</td>
                   <td>{{ "%.2f" % item.sum }}</td>
                 </tr>
-                {% endfor %}
-                <tr>
-                  <td><b>Загальна сума:</b></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td><b>{{ "%.2f" % itemone.totalsum }}</b></td>
-                </tr>
-              </tbody>
-            </table>            
-            <h4>Статус: {{ itemone.namestatus }}</h4>
-            <input type="hidden" name="id_status" value="{{ itemone.status }}" />
-        </p>  
-        <button class="buttons" type="submit">{{ name_button }}</button>
-    </form>
+              {% endfor %}
+              <tr>
+                <td><b>Загальна сума:</b></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b>{{ "%.2f" % itemone.totalsum }}</b></td>
+              </tr>
+            </tbody>
+          </table>            
+          <h4>Статус: {{ itemone.namestatus }}</h4>
+          <input type="hidden" name="id_status" value="{{ itemone.status }}" />
+          <button class="buttons" type="submit">{{ name_button }}</button>
+        </div>
+      </form>
+  </div>
 </div>
 {% endblock %}

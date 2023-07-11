@@ -1,0 +1,23 @@
+{% extends "base.html" %} {% block content %}
+  <div class="container">
+    <p><h2>Довідники</h2></p>
+    <table class="container">
+      <thead>
+        <tr>
+          <th>Назва довідника</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>
+            <a class="nav-link" href="/referencebook/{{ item.referencetablename }}"
+              >{{ item.referencename }}</a
+            >
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

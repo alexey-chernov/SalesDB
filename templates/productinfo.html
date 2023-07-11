@@ -1,10 +1,7 @@
 {% extends "base.html" %} {% block content %}
-<p>
-<div>
-  <h1>Інформація про товар</h1>
-</div>
-</p>
-<div>
+<div class="container">
+  <p><h2>Інформація про товар</h2></p>
+  <div class="container">
     <form method="POST" action="/setprice/{{ itemone.idTov }}">
       <h3>Найменування: {{ itemone.nameproduct }}</h3>
       <h4>Кількість: {{ itemone.quantity }} {{ itemone.nameunitshort }}</h4>
@@ -16,19 +13,20 @@
         name="newprice"
         value="{{ itemone.price }}"
       />
-      <button type="submit">Встановити нову ціну</button>
+      <button class="buttons" type="submit">Встановити нову ціну</button>
       <h4>Сума: {{ "%.2f" % itemone.sum }}</h4>
       <input type="hidden" name="idunit" value="{{ itemone.unit }}">
     </form>
-  <p>
-    <form method="POST" action="/income/{{ itemone.idTov }}">
-      <button type="submit">Надходження на склад</button>
-    </form>
-  </p>
-  <p>
-    <form method="POST" action="/selling/{{ itemone.idTov }}">
-      <button type="submit">Продаж товару</button>
-    </form>
-  </p>
+    <p>
+      <form method="POST" action="/income/{{ itemone.idTov }}">
+        <button class="buttons" type="submit">Надходження на склад</button>
+      </form>
+    </p>
+    <p>
+      <form method="POST" action="/selling/{{ itemone.idTov }}">
+        <button class="buttons" type="submit">Продаж товару</button>
+      </form>
+    </p>
+  </div>
 </div>
 {% endblock %}

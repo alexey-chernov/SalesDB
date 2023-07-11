@@ -1,37 +1,37 @@
 {% extends "base.html" %} {% block content %}
 
-<div>
-  <h4>Склад</h4>
+<div class="container">
+  <p><h3>Склад</h3></p>
+  <div class="input_product">
+    <form method="POST" action="/productadd">
+      <button class="buttons" type="submit">Додати товар</button>
+    </form>
+  </div>
+  <table class="container">
+    <thead>
+      <tr>
+        <th>Назва товару</th>
+        <th>Кількість</th>
+        <th>Одиниці</th>
+        <th>Ціна</th>
+        <th>Сума</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>
+          <a class="nav-link" href="/productinfo/{{ item.idprod }}"
+            >{{ item.nameprod }}</a
+          >
+        </td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.unitname }}</td>
+        <td>{{ "%.2f" % item.price }}</td>
+        <td>{{ "%.2f" % item.sum }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
-<div class="input_product">
-  <form method="POST" action="/productadd">
-    <button class="buttons" type="submit">Додати товар</button>
-  </form>
-</div>
-<table class="container">
-  <thead>
-    <tr>
-      <th>Назва товару</th>
-      <th>Кількість</th>
-      <th>Одиниці</th>
-      <th>Ціна</th>
-      <th>Сума</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for item in items %}
-    <tr>
-      <td>
-        <a class="nav-link" href="/productinfo/{{ item.idprod }}"
-          >{{ item.nameprod }}</a
-        >
-      </td>
-      <td>{{ item.quantity }}</td>
-      <td>{{ item.unitname }}</td>
-      <td>{{ "%.2f" % item.price }}</td>
-      <td>{{ "%.2f" % item.sum }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
 {% endblock %}
