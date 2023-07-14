@@ -2,13 +2,13 @@
 
 {% block content %}
 <div class="container">
-    <p><h3>Довідник: {{ reference_name }}</h3></p>
+    <p><h3>Довідник: {{ reference_name }}</h3></p>    
     <table class="container">
         <tbody>
             {% for item in reference_list %}
                 <tr>
-                    <form method="POST" action="/deletereference/{{ item[0] }}">
-                        {% for cell in item %}
+                    <form method="POST" action="/deletereference/{{ referencetablename }}/{{ item[0] }}">
+                        {% for cell in item[1:] %}
                             <td>{{ cell }}</td>
                         {% endfor %}
                         <td><button class="buttons" type="submit">Видалити</button></td>
@@ -16,14 +16,15 @@
                 </tr>
             {% endfor %}        
             <tr>
-                <form method="POST" action="/addreference">
-                    {% for cell in item %}
-                        <td><input type="text" name="name"></td>
+                <form method="POST" action="/addreference/{{ referencetablename }}">
+                    {% for cell in range(count_cell - 1) %}
+                        <td><input type="text" name="name{{ cell }}"></td>
                     {% endfor %}    
                     <td><button class="buttons" type="submit">Додати</button></td>
+                    <input type="hidden" name="countcell" value="{{ count_cell - 1 }}" />
                 </form>
             </tr>
         </tbody>
-    </table>
+    </table>    
 </div>
 {% endblock %}

@@ -1,11 +1,9 @@
 from sqlalchemy import Table, Column, Integer, String, Float, MetaData, Boolean, DateTime
-from sqlalchemy import create_engine
-from sqlalchemy import select, func, desc
+from sqlalchemy import create_engine, select, func, desc
 from sqlalchemy.sql import text
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, IntegerField, FloatField
+from wtforms import StringField, BooleanField, IntegerField, FloatField, PasswordField
 from wtforms.validators import DataRequired
-from wtforms import StringField, PasswordField
 from werkzeug.routing import ValidationError
 #import psycopg2
 import datetime
@@ -182,6 +180,7 @@ class OptTrade:
 
     def buildReport(self, functionname, functionparameters):
         sql = text(f"SELECT * FROM {functionname}({functionparameters});")
+        print(sql)
         #Викликається функція для вибраного звіту 
         result = conn.execute(sql).fetchall()
         return result
@@ -231,6 +230,11 @@ class OptTrade:
                                      'unit': unit, 'price': price}])
         conn.commit()
 
+    def addReferenceToTable(self, referencetablename, list_to_write):
+        sql = text(f"INSERT INTO {referencetablename} VALUES (nextval('{referencetablename}_id_seq'){list_to_write});") 
+        result = conn.execute(sql)
+        conn.commit()
+
     # UPDATE
     def updateSkladQuantity(self, id, newquantity):
         sql = sklad.update().where(sklad.c.idTov == id).values(quantity=newquantity)
@@ -244,6 +248,12 @@ class OptTrade:
 
     def updateStatusInvoice(self, numdoc, idstatus):
         sql = invoice.update().where(invoice.c.numdoc == numdoc).values(status=idstatus)
+        result = conn.execute(sql)
+        conn.commit()
+
+    #DELETE
+    def deleteReferenceFromTable(self, referencetablename, id):
+        sql = text(f"DELETE FROM {referencetablename} WHERE id = {id};")
         result = conn.execute(sql)
         conn.commit()
 

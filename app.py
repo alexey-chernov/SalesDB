@@ -186,6 +186,7 @@ def setprice(product_id):
     return render_template("productinfo.html", itemone=itemone)
 
 
+#Функції для звітності
 @app.route('/reports', methods=["GET"])
 @login_required
 def reports():
@@ -206,7 +207,8 @@ app.route('/buildreport/<functionname>', methods=["POST"])
 @login_required
 def buildreport(functionname):
     data = request.form
-
+    
+    print(functionname)
     dateforreport = data.get('dateforreport')
     
     functionparameters = dateforreport
@@ -219,6 +221,7 @@ def buildreport(functionname):
     return render_template("reportform.html", report=report, reportname=reportname)
 
 
+#Функції для довідників
 @app.route('/referencebooks', methods=["GET"])
 @login_required
 def referencebooks():
@@ -231,4 +234,40 @@ def referencebooks():
 def refenceform(referencetablename):
     reference_name = opttrade.getreferencesname(referencetablename).referencename
     reference_list = opttrade.buildreferencesform(referencetablename)
-    return render_template("references_form.html", reference_list=reference_list, reference_name=reference_name)
+    count_cell = len(reference_list[0])
+    return render_template("references_form.html", reference_list=reference_list, 
+                                                   reference_name=reference_name, 
+                                                   count_cell = count_cell, 
+                                                   referencetablename=referencetablename)
+
+
+@app.route('/deletereference/<referencetablename>/<id>', methods=["POST"])
+@login_required
+def deletereference(referencetablename, id):
+    opttrade.deleteReferenceFromTable(referencetablename, id)    
+    reference_name = opttrade.getreferencesname(referencetablename).referencename
+    reference_list = opttrade.buildreferencesform(referencetablename)
+    count_cell = len(reference_list[0])
+    return render_template("references_form.html", reference_list=reference_list, 
+                                                   reference_name=reference_name, 
+                                                   count_cell = count_cell, 
+                                                   referencetablename=referencetablename)
+
+
+@app.route('/addreference/<referencetablename>', methods=["POST"])
+@login_required
+def addreference(referencetablename):    
+    list_to_write = ""
+    data = request.form
+    countcell = data.get('countcell')
+    for cell in range(int(countcell)):
+        tmp_str = f"name{ cell }"
+        list_to_write = list_to_write + ",'" + data.get(tmp_str) + "'"
+    opttrade.addReferenceToTable(referencetablename, list_to_write)
+    reference_name = opttrade.getreferencesname(referencetablename).referencename
+    reference_list = opttrade.buildreferencesform(referencetablename)
+    count_cell = len(reference_list[0])
+    return render_template("references_form.html", reference_list=reference_list, 
+                                                   reference_name=reference_name, 
+                                                   count_cell = count_cell, 
+                                                   referencetablename=referencetablename)
