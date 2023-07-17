@@ -1,6 +1,7 @@
 {% extends "base.html" %} {% block content %}
 <div class="container">
-    <p><h3>{{ reportname }}</h3></p>
+    <p><center><h3>{{ reportname }}</h3></center></p>
+    <p><center><h4>{{ subtitle }}</h4></center></p>
     <table class="container">
         <thead>
             <tr>
@@ -11,7 +12,12 @@
             {% for item in report %}
                 <tr>
                     {% for cell in item %}
-                        <td>{{ cell }}</td>
+                        {% if cell != none %}
+                            <td>{{ cell }}</td>
+                        {% endif %}
+                        {% if cell == none %}
+                            <td></td>
+                        {% endif %}
                     {% endfor %}
                 </tr>
             {% endfor %}

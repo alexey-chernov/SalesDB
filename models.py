@@ -180,7 +180,6 @@ class OptTrade:
 
     def buildReport(self, functionname, functionparameters):
         sql = text(f"SELECT * FROM {functionname}({functionparameters});")
-        print(sql)
         #Викликається функція для вибраного звіту 
         result = conn.execute(sql).fetchall()
         return result

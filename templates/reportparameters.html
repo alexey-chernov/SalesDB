@@ -7,25 +7,26 @@
   </p>
 
   <form method="POST" action="/buildreport/{{ reportdata.functionname }}">
-    {% for parameter in parameters %}
-      {% if parameter == "d" %}
+    {% for i in range(count_parameters) %}
+      {% if parameters[i] == "d" %}
         <p>Дата:
-        <input type="date" name="dateforreport" /></p>
+        <input type="date" name="parameter{{ i }}" /></p>
       {% endif %}
-      {% if parameter == "n" %}
+      {% if parameters[i] == "n" %}
         <p>Номер:
-        <input type="numeric" name="numberforreport" /></p>
+        <input type="numeric" name="parameter{{ i }}" /></p>
       {% endif %}
-      {% if parameter == "c" %}
+      {% if parameters[i] == "c" %}
         <p>Список:
-        <select name="unitcode" id="unitcode">
+        <select name="parameter{{ i }}" id="unitcode">
             <option>Item 1</option>
             <option>Item 2</option>
             <option>Item 3</option>      
         </select></p>
       {% endif %}
-    {% endfor %}
+    {% endfor %}    
     <button class="buttons" type="submit">Створити звіт</button>
+    <input type="hidden" name="countparams" value="{{ count_parameters }}" />
   </form>
 </div>
 {% endblock %}

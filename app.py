@@ -198,28 +198,32 @@ def reports():
 @login_required
 def getreport(functionname):
     function_data = opttrade.getReportParameters(functionname)
-    function_parameters = function_data.functionparameters
-    list(function_parameters)
-    return render_template("reportparameters.html", parameters=function_parameters, reportdata=function_data)
+    function_parameters = list(function_data.functionparameters.strip())
+    count_parameters = len(function_parameters)
+    return render_template("reportparameters.html", parameters=function_parameters, 
+                                                    count_parameters = count_parameters, 
+                                                    reportdata=function_data)
 
 
-app.route('/buildreport/<functionname>', methods=["POST"])
+@app.route('/buildreport/<functionname>', methods=["GET", "POST"])
 @login_required
 def buildreport(functionname):
+    functionparameters = ''
+    subtitle = ''
     data = request.form
-    
-    print(functionname)
-    dateforreport = data.get('dateforreport')
-    
-    functionparameters = dateforreport
+    count_params = int(data.get('countparams'))
+    tmp_str = data.get(f"parameter0")
+    functionparameters = f"'{tmp_str}'"
+    subtitle = f"{tmp_str}"
+    for p in range(1, count_params):
+        tmp_str = data.get(f"parameter{ p }")
+        functionparameters = functionparameters + f",'{tmp_str}'"
+        subtitle = subtitle + f" - {tmp_str}"
     function_data = opttrade.getReportParameters(functionname)
-    reportname = function_data.reportname
-    
-    functionparameters = f"'{dateforreport}'"
-
+    reportname = function_data.reportname    
     report = opttrade.buildReport(functionname, functionparameters)
-    return render_template("reportform.html", report=report, reportname=reportname)
-
+    return render_template("reportform.html", report=report, reportname=reportname, subtitle=subtitle)
+    
 
 #Функції для довідників
 @app.route('/referencebooks', methods=["GET"])
