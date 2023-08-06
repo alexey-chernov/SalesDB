@@ -1,11 +1,13 @@
+from asyncio import tasks
 from flask import Flask, jsonify, abort, make_response, request, render_template, session, flash, redirect, url_for
+from werkzeug.security import generate_password_hash, check_password_hash
 from models import opttrade
 from models import LoginForm
 import functools
+#import datetime
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "saleprog"
-
 
 def login_required(view_func):
     @functools.wraps(view_func)
@@ -15,55 +17,58 @@ def login_required(view_func):
         return redirect(url_for('login', next=request.path))
     return check_permissions
 
-
 @app.route("/login/", methods=['GET', 'POST'])
-def login():
+def login():    
+    userlist=opttrade.getUserList()
     form = LoginForm()
     errors = None
-    next_url = request.args.get('next')
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            session['logged_in'] = True
+    next_url = request.args.get('next')    
+    if request.method == 'POST':        
+        data = request.form
+        userid = data.get('userid')
+        userdata = opttrade.getUserParameters(userid)
+        password = data.get('pwd')        
+        if check_password_hash(userdata.hash.strip(), password):
+            session['logged_in'] = True            
             session.permanent = True  # Use cookie to store session.
             flash('You are now logged in.', 'success')
             return redirect(next_url or url_for('index'))
         else:
-            errors = form.errors
-    return render_template("login_form.html", form=form, errors=errors)
-
+            errors = form.errors    
+    return render_template("login_form.html", form=form, errors=errors, userlist=userlist)
 
 @app.route('/logout/', methods=['GET', 'POST'])
 def logout():
     if request.method == 'POST':
+        session['logged_in'] = False
         session.clear()
         flash('You are now logged out.', 'success')
     return redirect(url_for('index'))
 
 
 @app.route("/")
-def index():
+@login_required
+def index():    
+    #return render_template("base.html", fullusername=current_user.name)
     return render_template("base.html")
-
+    
 
 @app.route('/warehouse', methods=["GET"])
 @login_required
 def warehouse():
-    items = opttrade.getWarehouse()
-    return render_template("warehouse.html", items=items)
+    return render_template("warehouse.html", items=opttrade.getWarehouse())
 
 
 @app.route('/productinfo/<product_id>', methods=["GET"])
 @login_required
 def productinfo(product_id):
-    itemone = opttrade.getProductInfo(product_id)
-    return render_template("productinfo.html", itemone=itemone)
+    return render_template("productinfo.html", itemone=opttrade.getProductInfo(product_id))
 
 
 @app.route('/income/<product_id>', methods=["POST"])
 @login_required
 def income(product_id):
-    item = opttrade.getProductInfo(product_id)
-    return render_template("income.html", item=item)
+    return render_template("income.html", item=opttrade.getProductInfo(product_id))
 
 
 @app.route('/saveincome/<product_id>', methods=["POST"])
@@ -83,15 +88,13 @@ def saveincome(product_id):
                            price_to_income, sum_to_income, numberdocument, datedocument, is_saled)
     opttrade.updateSkladQuantity(product_id, int(
         quantity_to_income) + int(oldquantity))
-    items = opttrade.getWarehouse()
-    return render_template("warehouse.html", items=items)
+    return render_template("warehouse.html", items=opttrade.getWarehouse())
 
 
 @app.route('/selling/<product_id>', methods=["POST"])
 @login_required
 def sale(product_id):
-    item = opttrade.getProductInfo(product_id)
-    return render_template("sales.html", item=item)
+    return render_template("sales.html", item=opttrade.getProductInfo(product_id))
 
 
 @app.route('/savesale/<product_id>', methods=["POST"])
@@ -111,15 +114,13 @@ def savesales(product_id):
                            price_to_sale, sum_to_sale, numberdocument, datedocument, is_saled)
     opttrade.updateSkladQuantity(product_id, int(
         oldquantity) - int(quantity_to_sale))
-    items = opttrade.getWarehouse()
-    return render_template("warehouse.html", items=items)
+    return render_template("warehouse.html", items=opttrade.getWarehouse())
 
 
 @app.route('/productadd', methods=["POST"])
 @login_required
 def productadd():
-    items = opttrade.getListProducts()
-    return render_template("productadd.html", items=items)
+    return render_template("productadd.html", items=opttrade.getListProducts())
 
 
 @app.route('/newproduct/<product_id>', methods=["GET"])
@@ -128,8 +129,7 @@ def newproduct(product_id):
     units = []
     for unit in opttrade.getUnits():
         units.append(unit[1])
-    product = opttrade.getProductName(product_id)
-    return render_template("newproduct.html", units=units, product_id=product_id, product=product)
+    return render_template("newproduct.html", units=units, product_id=product_id, product=opttrade.getProductName(product_id))
 
 
 @app.route('/saveproduct/<product_id>', methods=["POST"])
@@ -137,18 +137,16 @@ def newproduct(product_id):
 def saveproduct(product_id):
     data = request.form
     quantity = data.get('quantity')
-    idunit = opttrade.getIdUnit(data.get('unitcode'))
+    idunit = data.get('unitcode')
     price = data.get('price')
-    opttrade.createproductinwarehouse(product_id, quantity, idunit.id, price)
-    items = opttrade.getListProducts()
-    return render_template("productadd.html", items=items)
+    opttrade.createproductinwarehouse(product_id, quantity, idunit, price)
+    return render_template("productadd.html", items=opttrade.getListProducts())
 
 
 @app.route('/invoices', methods=["GET"])
 @login_required
 def invoices():
-    items = opttrade.getInvoices()
-    return render_template("invoices.html", items=items)
+    return render_template("invoices.html", items=opttrade.getInvoices())
 
 
 @app.route('/invoiceinfo/<numberdoc>', methods=["GET"])
@@ -172,8 +170,7 @@ def changestatus(numdoc):
         opttrade.updateStatusInvoice(numdoc, 2)
     elif idstatus == 2:
         opttrade.updateStatusInvoice(numdoc, 3)
-    items = opttrade.getInvoices()
-    return render_template("invoices.html", items=items)
+    return render_template("invoices.html", items=opttrade.getInvoices())
 
 
 @app.route('/setprice/<product_id>', methods=["POST"])
@@ -182,16 +179,14 @@ def setprice(product_id):
     data = request.form
     newprice = data.get('newprice')
     opttrade.updateSkladPrice(product_id, newprice)
-    itemone = opttrade.getProductInfo(product_id)
-    return render_template("productinfo.html", itemone=itemone)
+    return render_template("productinfo.html", itemone=opttrade.getProductInfo(product_id))
 
 
 #Функції для звітності
 @app.route('/reports', methods=["GET"])
 @login_required
 def reports():
-    items = opttrade.getReportsList()
-    return render_template("reports.html", items=items)
+    return render_template("reports.html", items=opttrade.getReportsList())
 
 
 @app.route('/report/<functionname>', methods=["GET", "POST"])
@@ -219,8 +214,7 @@ def buildreport(functionname):
         tmp_str = data.get(f"parameter{ p }")
         functionparameters = functionparameters + f",'{tmp_str}'"
         subtitle = subtitle + f" - {tmp_str}"
-    function_data = opttrade.getReportParameters(functionname)
-    reportname = function_data.reportname    
+    reportname = opttrade.getReportParameters(functionname).reportname    
     report = opttrade.buildReport(functionname, functionparameters)
     return render_template("reportform.html", report=report, reportname=reportname, subtitle=subtitle)
     
@@ -229,8 +223,7 @@ def buildreport(functionname):
 @app.route('/referencebooks', methods=["GET"])
 @login_required
 def referencebooks():
-    items = opttrade.getReferencebooksList()
-    return render_template("references.html", items=items)
+    return render_template("references.html", items=opttrade.getReferencebooksList())
 
 
 @app.route('/referencebook/<referencetablename>', methods=["GET"])

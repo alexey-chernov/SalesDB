@@ -16,7 +16,7 @@
     <tbody>
       {% for item in items %}
       <tr>
-        <th>{{ item.dateinvoice.strftime('%d-%m-%Y') }}</th>
+        <td>{{ item.dateinvoice.strftime('%d-%m-%Y') }}</td>
         <td>{{ item.nametype }}</td>
         <td>
           <a class="nav-link" href="/invoiceinfo/{{ item.numdoc }}"

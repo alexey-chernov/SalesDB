@@ -4,4 +4,5 @@ sqlalchemy
 flask-sqlalchemy
 flask-migrate
 flask-shell-ipython
+flask-login
 psycopg2-binary

@@ -48,3 +48,22 @@ body {
     background-color: rgba(199, 194, 194, 0.801);
     transition: background-color 0.15s linear;
 }
+
+.new_nav-link
+{
+    display:block;
+    padding:.5rem 1rem
+}
+
+.new_nav-link:focus,
+.new_nav-link:hover
+{
+    color:#007bff
+}
+
+.new_nav-link.disabled
+{
+    color:#6c757d;
+    pointer-events:none;
+    cursor:default
+}

@@ -7,14 +7,12 @@ from wtforms.validators import DataRequired
 from werkzeug.routing import ValidationError
 #import psycopg2
 import datetime
+from app import session
 
 engine = create_engine(
     'postgresql+psycopg2://salesadmin:qwerty123456@10.66.66.1/salesdb')
-conn = engine.connect()
+conn = engine.connect()         #З'єднання з БД PostgreSQL
 meta = MetaData()
-
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "change-me"
 
 sklad = Table(
     'sklad', meta,
@@ -82,23 +80,22 @@ reference_books = Table(
     Column('referencetablename', String(100))
 )
 
+users = Table(
+    'users', meta,
+    Column('uid', Integer, nullable=False, primary_key=True),
+    Column('username', String(100)),
+    Column('fullusername', String(100)),
+    Column('hash', String(255)),
+    Column('tasks', String(10))
+)
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
 
-    def validate_username(self, field):
-        if field.data != ADMIN_USERNAME:
-            raise ValidationError("Invalid username")
-        return field.data
-
-    def validate_password(self, field):
-        if field.data != ADMIN_PASSWORD:
-            raise ValidationError("Invalid password")
-        return field.data
-
 
 class OptTrade:
+    
     # SELECT
     def getWarehouse(self):
         #sql = select(sklad, products, units, (sklad.c.quantity * sklad.c.price).label("sum")).where(
@@ -129,11 +126,17 @@ class OptTrade:
         sql = units.select().order_by(units.c.nameunit)
         result = conn.execute(sql)
         return result
+    
+    #def getProductsOnWarehouse(self):
+    #    sql = units.select(sklad, products.c.nameproduct).where(
+    #        sklad.c.idTov == products.c.id).order_by(products.c.nameproduct)
+    #    result = conn.execute(sql)
+    #    return result
 
-    def getIdUnit(self, nameunits):
-        sql = units.select().where(units.c.nameunit == nameunits)
-        result = conn.execute(sql).fetchone()
-        return result
+    #def getIdUnit(self, nameunits):
+    #    sql = units.select().where(units.c.nameunit == nameunits)
+    #    result = conn.execute(sql).fetchone()
+    #    return result
 
     def getProductName(self, product_id):
         sql = products.select().where(products.c.id == product_id)
@@ -198,6 +201,16 @@ class OptTrade:
         sql = select(reference_books).where(reference_books.c.referencetablename == referencetablename)
         result = conn.execute(sql).fetchone()
         return result
+    
+    def getUserList(self):
+        sql = select(users).order_by(users.c.fullusername)
+        result = conn.execute(sql)
+        return result
+    
+    def getUserParameters(self, uid):
+        sql = select(users).where(users.c.uid == uid)
+        result = conn.execute(sql).fetchone()
+        return result
 
     # INSERT INTO
     def createinvoice(self, typeid, productid, quantity, unit, leftovers, price, sum, numberdocument, datedocument, is_saled):
@@ -257,8 +270,8 @@ class OptTrade:
         conn.commit()
 
     # При завершенні роботи - закрити з'єднання з БД
-    def __del__(self):
+    def __del__(self):        
         conn.close()
-
+        
 
 opttrade = OptTrade()

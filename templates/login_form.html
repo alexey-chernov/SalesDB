@@ -9,20 +9,16 @@
     {{form.hidden_tag()}}
     <div class="form-group">
         <label for="title">Ім'я користувача</label>
-        {% if errors and errors.username %}
-        {{ form.username(class_="form-control is-invalid") }}
-        {% else %}
-        {{ form.username(class_="form-control") }}
-        {% endif %}
+        <select name="userid" id="username">
+            {% for user in userlist %}
+                <option value={{user.uid}}>{{user.fullusername.strip()}}</option>
+            {% endfor %}
+        </select>
         <div class="invalid-feedback">{{ errors.username|join(' ') }}</div>
     </div>
     <div class="form-group">
         <label for="body">Пароль</label>
-        {% if errors and errors.password %}
-        {{ form.password(class_="form-control is-invalid") }}
-        {% else %}
-        {{ form.password(class_="form-control") }}
-        {% endif %}
+        <input type="password" id="pwd" name="pwd">
         <div class="invalid-feedback">{{ errors.password|join(' ') }}</div>
     </div>
     <button type="submit" class="btn btn-primary mt-5">Увійти</button>

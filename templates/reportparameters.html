@@ -11,19 +11,7 @@
       {% if parameters[i] == "d" %}
         <p>Дата:
         <input type="date" name="parameter{{ i }}" /></p>
-      {% endif %}
-      {% if parameters[i] == "n" %}
-        <p>Номер:
-        <input type="numeric" name="parameter{{ i }}" /></p>
-      {% endif %}
-      {% if parameters[i] == "c" %}
-        <p>Список:
-        <select name="parameter{{ i }}" id="unitcode">
-            <option>Item 1</option>
-            <option>Item 2</option>
-            <option>Item 3</option>      
-        </select></p>
-      {% endif %}
+      {% endif %}      
     {% endfor %}    
     <button class="buttons" type="submit">Створити звіт</button>
     <input type="hidden" name="countparams" value="{{ count_parameters }}" />

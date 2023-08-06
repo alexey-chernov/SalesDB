@@ -1,10 +1,10 @@
 {% extends "base.html" %} {% block content %}
 <div class="container">
-  <p><h2>{{ itemone.nametype }}</h2></p>
+  <p><h2><center>{{ itemone.nametype }}</center></h2></p>
   <div class="container">
       <form method="POST" action="/changestatus/{{ itemone.numdoc }}">
         <div class="container">
-          <h4>Номер накладної: {{ itemone.numdoc }}</h4>
+          <h4><center>Номер накладної: {{ itemone.numdoc }}</center></h4>
           <h4>Дата накладної: {{ itemone.datedoc.strftime('%d-%m-%Y') }}</h4>
           <h4>Дата операції: {{ itemone.dateinvoice.strftime('%d-%m-%Y') }}</h4>
           <table class="container">

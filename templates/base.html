@@ -6,17 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-  <title>ПП "ОптПрод</title>
+  <title>ПП "ОптПрод"</title>
 
   <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/dashboard/">
 
   <!-- Bootstrap core CSS -->
-
   
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   
-
   <!-- Favicons -->
   <meta name="theme-color" content="#563d7c">
   <!-- Custom styles for this template -->
@@ -27,10 +25,8 @@
 <body>
   <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
     <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">ПП "ОптПрод"</a>
-    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
-    <ul class="navbar-nav px-3">
-    </ul>
-    {% if session.logged_in %}
+  
+    {% if session.logged_in %} 
       <form class="form-inline my-2 my-lg-0" action="{{ url_for('logout') }}" method="POST">
         <button class="btn btn-secondary my-2 my-sm-0" type="submit">Вихід</button>
       </form>
@@ -45,32 +41,27 @@
         <div class="sidebar-sticky">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link active" href="/">
-                <span data-feather="home"></span>
-                Головна <span class="sr-only">(current)</span>
+              <a class="nav-link active" href="{{ url_for('index') }}">                
+                Головна
               </a>
-            </li>
+            </li>     
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('warehouse') }}">
-                <span data-feather="shopping-cart"></span>
                 Склад
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('invoices') }}">
-                <span data-feather="dollar-sign"></span>
                 Накладні
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('reports') }}">
-                <span data-feather="dollar-sign"></span>
                 Звітність
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('referencebooks') }}">
-                <span data-feather="dollar-sign"></span>
                 Довідники
               </a>
             </li>
