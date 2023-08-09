@@ -126,10 +126,7 @@ def productadd():
 @app.route('/newproduct/<product_id>', methods=["GET"])
 @login_required
 def newproduct(product_id):
-    units = []
-    for unit in opttrade.getUnits():
-        units.append(unit[1])
-    return render_template("newproduct.html", units=units, product_id=product_id, product=opttrade.getProductName(product_id))
+    return render_template("newproduct.html", units=opttrade.getUnits(), product_id=product_id, product=opttrade.getProductName(product_id))
 
 
 @app.route('/saveproduct/<product_id>', methods=["POST"])

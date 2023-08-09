@@ -123,7 +123,7 @@ class OptTrade:
         return result
 
     def getUnits(self):
-        sql = units.select().order_by(units.c.nameunit)
+        sql = select(units).order_by(units.c.nameunit)
         result = conn.execute(sql)
         return result
     

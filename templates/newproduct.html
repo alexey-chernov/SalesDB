@@ -10,7 +10,7 @@
       <h4>Одиниці: </h4>
       <select name="unitcode" id="unitcode">
           {% for unit in units %}
-              <option value={{id}}>{{unit}}</option>
+              <option value={{unit.id}}>{{unit.nameunit}}</option>
           {% endfor %}
       </select>
       <h4>Ціна:</h4>
